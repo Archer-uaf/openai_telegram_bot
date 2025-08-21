@@ -8,7 +8,7 @@ class OpenAIClient:
     async def ask(self, user_message, system_prompt: str = "You are a helpful assistant") -> str:
         try:
             response = await self._client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_message}
