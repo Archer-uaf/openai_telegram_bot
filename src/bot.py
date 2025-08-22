@@ -1,58 +1,32 @@
 from config import TG_BOT_API_KEY
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, CallbackQueryHandler
-from utils import load_messages_for_bot, read_text, random_keyboard
-from openapi_client import OpenAIClient
-from config import PATH_TO_RANDOM_PROMPT
-from config import PATH_TO_RANDOM_IMAGE
-from config import PATH_TO_GPT_IMAGE
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, MessageHandler, filters
+from handlers import start, random_fact, gpt_start, gpt_end, talk_start, talk_set_persona, talk_end, handle_text
+from utils import load_messages_for_bot
 
-
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = load_messages_for_bot("main")
-    if update.callback_query:
-        await update.callback_query.edit_message_text(text)
-    else:
-        await update.message.reply_text(text)
-
-
-async def random_fact(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = update.effective_chat.id
-    await context.bot.send_photo(chat_id=chat_id, photo=open(PATH_TO_RANDOM_IMAGE, "rb"))
-    prompt = read_text(PATH_TO_RANDOM_PROMPT)
-    client = OpenAIClient()
-    fact = await client.ask(user_message=prompt)
-    await context.bot.send_message(chat_id=chat_id, text=fact, reply_markup=random_keyboard())
-
-async def gpt_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = update.effective_chat.id
-    await context.bot.send_photo(chat_id=chat_id, photo=open(PATH_TO_GPT_IMAGE, "rb"))
-    await context.bot.send_message(chat_id=chat_id, text="Напишіть повідомлення для ChatGPT")
-    context.user_data["mode"] = "gpt"
-
-
-async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if context.user_data.get("mode") == "gpt":
-        client = OpenAIClient()
-        answer = await client.ask(user_message=update.message.text)
-        await update.message.reply_text(answer)
-        context.user_data["mode"] = None
-        await update.message.reply_text(load_messages_for_bot("main"))
-
-
-async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def button_handler(update, context):
     data = update.callback_query.data
     if data == "random":
-        await random_fact(update, context)
+        from handlers import random_fact as _rf
+        await _rf(update, context)
     elif data == "end":
         await start(update, context)
+    elif data == "gpt_end":
+        await gpt_end(update, context, load_messages_for_bot("main"))
+    elif data == "talk_einstein":
+        await talk_set_persona(update, context, "einstein")
+    elif data == "talk_jobs":
+        await talk_set_persona(update, context, "jobs")
+    elif data == "talk_musk":
+        await talk_set_persona(update, context, "musk")
+    elif data == "talk_end":
+        await talk_end(update, context, load_messages_for_bot("main"))
     await update.callback_query.answer()
-
 
 app = ApplicationBuilder().token(TG_BOT_API_KEY).build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("random", random_fact))
 app.add_handler(CommandHandler("gpt", gpt_start))
+app.add_handler(CommandHandler("talk", talk_start))
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 app.add_handler(CallbackQueryHandler(button_handler))
 app.run_polling()
