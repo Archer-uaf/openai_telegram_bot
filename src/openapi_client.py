@@ -18,11 +18,3 @@ class OpenAIClient:
         except OpenAIError as e:
             # logging here
             raise
-
-async def main():
-    client = OpenAIClient()
-    reply = await client.ask(input())
-    print(reply)
-
-if __name__ == "__main__":
-    asyncio.run(main())
