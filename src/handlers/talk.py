@@ -3,6 +3,10 @@ from telegram.ext import ContextTypes
 from pathlib import Path
 from src.config import PATH_TO_TALK_IMAGE, PATH_TO_TALK_PROMPTS
 from src.openapi_client import OpenAIClient
+from src.keyboards import talk_keyboard, talk_end_keyboard
+import logging
+
+logger = logging.getLogger(__name__)
 
 def talk_keyboard():
     return InlineKeyboardMarkup([
@@ -18,6 +22,7 @@ def read_text(path: Path) -> str:
     return Path(path).read_text(encoding="utf-8").strip()
 
 async def talk_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info("Command /talk from user %s", update.effective_chat.id)
     chat_id = update.effective_chat.id
     context.user_data["mode"] = None
     context.user_data["talk_prompt"] = None
@@ -26,6 +31,7 @@ async def talk_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def talk_set_persona(update: Update, context: ContextTypes.DEFAULT_TYPE, persona: str):
     path = PATH_TO_TALK_PROMPTS / f"{persona}.txt"
+    logger.info("User %s selected persona %s", update.effective_chat.id, persona)
     if not path.exists():
         await update.callback_query.message.reply_text("Файл промпта не знайдено.")
         await update.callback_query.answer()
@@ -36,6 +42,7 @@ async def talk_set_persona(update: Update, context: ContextTypes.DEFAULT_TYPE, p
     await update.callback_query.answer()
 
 async def talk_end(update: Update, context: ContextTypes.DEFAULT_TYPE, main_text: str):
+    logger.info("Talk ended by user %s", update.effective_chat.id)
     context.user_data["mode"] = None
     context.user_data["talk_prompt"] = None
     await update.callback_query.message.reply_text(main_text)
