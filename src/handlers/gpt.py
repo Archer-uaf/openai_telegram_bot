@@ -1,8 +1,7 @@
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes
-from src.config import PATH_TO_GPT_IMAGE
-from src.openapi_client import OpenAIClient
-from src.keyboards import gpt_keyboard
+from src.core.config import PATH_TO_GPT_IMAGE
+from src.core.keyboards import gpt_keyboard
 import logging
 
 logger = logging.getLogger(__name__)

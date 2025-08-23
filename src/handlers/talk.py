@@ -1,9 +1,8 @@
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes
 from pathlib import Path
-from src.config import PATH_TO_TALK_IMAGE, PATH_TO_TALK_PROMPTS
-from src.openapi_client import OpenAIClient
-from src.keyboards import talk_keyboard, talk_end_keyboard
+from src.core.config import PATH_TO_TALK_IMAGE, PATH_TO_TALK_PROMPTS
+from src.core.keyboards import talk_keyboard
 import logging
 
 logger = logging.getLogger(__name__)

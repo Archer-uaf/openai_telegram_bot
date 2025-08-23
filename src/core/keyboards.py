@@ -54,3 +54,21 @@ def translate_actions_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton("Закінчити", callback_data="translate_end")]
     ])
 
+def recommendations_genre_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("Бойовик", callback_data="recommendations_genre_action")],
+         [InlineKeyboardButton("Комедія", callback_data="recommendations_genre_comedy")],
+         [InlineKeyboardButton("Драма", callback_data="recommendations_genre_drama")],
+         [InlineKeyboardButton("Хоррор", callback_data="recommendations_genre_horror")],
+         [InlineKeyboardButton("Фантастика", callback_data="recommendations_genre_scifi")],
+        [InlineKeyboardButton("До головного меню", callback_data="recommendations_genre_end")]
+    ])
+
+def recommendations_actions_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("Вибрати інший жанр", callback_data="recommendations_another_genre")],
+        [InlineKeyboardButton("Інші варіанти", callback_data="recommendations_another_film")],
+        [InlineKeyboardButton("Закінчити", callback_data="recommendations_end")]
+    ])
+
+

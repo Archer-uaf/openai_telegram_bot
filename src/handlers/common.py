@@ -1,10 +1,9 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from src.openapi_client import OpenAIClient
-from src.keyboards import gpt_keyboard, quiz_actions_keyboard, translate_actions_keyboard
-import re
-from src.config import PATH_TO_QUIZ_PROMPT, PATH_TO_TRANSLATE_PROMPT
-from src.utils import read_text
+from src.core.openai_client import OpenAIClient
+from src.core.keyboards import gpt_keyboard, quiz_actions_keyboard, translate_actions_keyboard, recommendations_actions_keyboard
+from src.core.config import PATH_TO_QUIZ_PROMPT, PATH_TO_TRANSLATE_PROMPT, PATH_TO_RECOMMENDATIONS_PROMPT
+from src.core.utils import read_text
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     mode = context.user_data.get("mode")
@@ -17,7 +16,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if mode == "talk" and context.user_data.get("talk_prompt"):
         client = OpenAIClient()
         answer = await client.ask(user_message=update.message.text, system_prompt=context.user_data["talk_prompt"])
-        from src.keyboards import talk_end_keyboard
+        from src.core.keyboards import talk_end_keyboard
         await update.message.reply_text(answer, reply_markup=talk_end_keyboard())
         return
 
@@ -40,5 +39,14 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_msg = f"Target language: {lang}\nText: {update.message.text.strip()}"
         translated = await client.ask(user_message=user_msg, system_prompt=sys)
         await update.message.reply_text(translated, reply_markup=translate_actions_keyboard())
+        return
+    if mode == "recommendations" and context.user_data.get("recommendations_genre"):
+        client = OpenAIClient()
+        sys = read_text(PATH_TO_RECOMMENDATIONS_PROMPT)
+        genre = context.user_data["recommendations_genre"]
+        prefs = update.message.text.strip()
+        context.user_data["recommendations_last_query"] = prefs
+        text = await client.ask(user_message=f"genre: {genre}\npreferences: {prefs}", system_prompt=sys)
+        await update.message.reply_text(text, reply_markup=recommendations_actions_keyboard())
         return
 

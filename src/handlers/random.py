@@ -1,9 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from config import PATH_TO_RANDOM_IMAGE, PATH_TO_RANDOM_PROMPT
-from utils import read_text
-from openapi_client import OpenAIClient
-from src.keyboards import random_keyboard
+from src.core import PATH_TO_RANDOM_IMAGE, PATH_TO_RANDOM_PROMPT, read_text, OpenAIClient, random_keyboard
 import logging
 
 logger = logging.getLogger(__name__)

@@ -1,8 +1,8 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from src.config import PATH_TO_TRANSLATE_IMAGE, PATH_TO_TRANSLATE_PROMPT
-from src.keyboards import translate_langs_keyboard
-from src.utils import read_text
+from src.core.config import PATH_TO_TRANSLATE_IMAGE, PATH_TO_TRANSLATE_PROMPT
+from src.core.keyboards import translate_langs_keyboard
+from src.core.utils import read_text
 
 async def translate_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id

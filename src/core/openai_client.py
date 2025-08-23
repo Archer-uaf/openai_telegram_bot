@@ -1,6 +1,7 @@
-from config import OPENAI_API_KEY
+from src.core.config import OPENAI_API_KEY
 from openai import AsyncOpenAI, OpenAIError
-import asyncio
+
+
 class OpenAIClient:
     def __init__(self):
         self._client = AsyncOpenAI(api_key=OPENAI_API_KEY)
@@ -16,5 +17,4 @@ class OpenAIClient:
             )
             return response.choices[0].message.content
         except OpenAIError as e:
-            # logging here
             raise

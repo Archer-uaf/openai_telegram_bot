@@ -1,8 +1,8 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from src.config import PATH_TO_QUIZ_IMAGE
-from src.keyboards import quiz_topics_keyboard, quiz_actions_keyboard
-from src.openapi_client import OpenAIClient
+from src.core.config import PATH_TO_QUIZ_IMAGE
+from src.core.keyboards import quiz_topics_keyboard
+from src.core.openai_client import OpenAIClient
 import logging
 
 logger = logging.getLogger(__name__)
