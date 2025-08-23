@@ -36,8 +36,8 @@ async def quiz_next_question(update: Update, context: ContextTypes.DEFAULT_TYPE)
         return
     client = OpenAIClient()
     prompt = (
-        f"Дай цікаве питання по темі '{topic}' українською. Питання повинні бути цікаві і різноманітні"
-        "Надай тільки коротке питання у форматі вікторини."
+        f"Дай цікаве питання по темі '{topic}' українською. Питання повинні бути цікаві і різноманіті, важливо щоб вони або їх тематика не повторювалися"
+        "Надай коротке питання у форматі вікторини і варіанти відповідей у форматі а б в г, але не кажи правильної відповіді, дочекайся її від користувача."
     )
     question = await client.ask(user_message=prompt, system_prompt="You are a concise quiz generator.")
     context.user_data["quiz_question"] = question.strip()

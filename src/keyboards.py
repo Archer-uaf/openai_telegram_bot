@@ -38,3 +38,19 @@ def quiz_actions_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton("Закінчити", callback_data="quiz_end")],
     ])
 
+def translate_langs_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("EN", callback_data="translate_language_en"),
+         InlineKeyboardButton("DE", callback_data="translate_language_de"),
+         InlineKeyboardButton("PL", callback_data="translate_language_pl"),
+         InlineKeyboardButton("ES", callback_data="translate_language_es")],
+        [InlineKeyboardButton("UA", callback_data="translate_language_uk")],
+        [InlineKeyboardButton("Закінчити", callback_data="translate_end")]
+    ])
+
+def translate_actions_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("Змінити мову", callback_data="translate_change")],
+        [InlineKeyboardButton("Закінчити", callback_data="translate_end")]
+    ])
+

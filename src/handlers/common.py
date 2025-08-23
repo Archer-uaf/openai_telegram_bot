@@ -1,9 +1,9 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from src.openapi_client import OpenAIClient
-from src.keyboards import gpt_keyboard, quiz_actions_keyboard
+from src.keyboards import gpt_keyboard, quiz_actions_keyboard, translate_actions_keyboard
 import re
-from src.config import PATH_TO_QUIZ_PROMPT
+from src.config import PATH_TO_QUIZ_PROMPT, PATH_TO_TRANSLATE_PROMPT
 from src.utils import read_text
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -32,4 +32,13 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await update.message.reply_text(verdict, reply_markup=quiz_actions_keyboard())
         context.user_data["quiz_question"] = None
+
+    if mode == "translate" and context.user_data.get("translate_language"):
+        client = OpenAIClient()
+        lang = context.user_data["translate_language"]
+        sys = read_text(PATH_TO_TRANSLATE_PROMPT)
+        user_msg = f"Target language: {lang}\nText: {update.message.text.strip()}"
+        translated = await client.ask(user_message=user_msg, system_prompt=sys)
+        await update.message.reply_text(translated, reply_markup=translate_actions_keyboard())
+        return
 
